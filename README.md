@@ -1,6 +1,6 @@
 Y6 Hexa Coaxial MultiCopter
 ===========================
 
-# Basic
+## Basic
 
-# FPV
+## FPV
