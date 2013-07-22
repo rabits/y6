@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<title>Y6 Model</title>
+	<title>Imported Model (Three.js)</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<link rel=stylesheet href="css/base.css"/>
@@ -68,6 +68,11 @@ function init()
 	else
 		renderer = new THREE.CanvasRenderer(); 
 	renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	
+    // Shadows
+    renderer.shadowMapEnabled = true;
+    renderer.shadowMapSoft = true;
+
 	container = document.getElementById( 'ThreeJS' );
 	container.appendChild( renderer.domElement );
 	// EVENTS
@@ -82,8 +87,12 @@ function init()
 	stats.domElement.style.zIndex = 100;
 	container.appendChild( stats.domElement );
 	// LIGHT
-	var light = new THREE.PointLight(0xffffff);
-	light.position.set(-100,200,100);
+	var light = new THREE.DirectionalLight(0xffffff);
+	light.position.set(400,400,-400);
+	light.target.position.set(0,0,0);
+    light.castShadow = true;
+    light.shadowDarkness = 0.5;
+    light.shadowCameraVisible = true;
 	scene.add(light);
 	// FLOOR
 	var floorTexture = new THREE.ImageUtils.loadTexture( 'images/checkerboard.jpg' );
@@ -94,14 +103,15 @@ function init()
 	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	floor.position.y = -80;
 	floor.rotation.x = Math.PI / 2;
+//    floor.receiveShadow = true;
 	scene.add(floor);
 	// SKYBOX/FOG
 	var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
 	var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9999ff, side: THREE.BackSide } );
 	var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
-	// scene.add(skyBox);
+	scene.add(skyBox);
 	scene.fog = new THREE.FogExp2( 0x9999ff, 0.00025 );
-	
+
 	////////////
 	// CUSTOM //
 	////////////
@@ -114,7 +124,7 @@ function init()
 	jsonLoader.load( "y6.js", addModelToScene );
 	// addModelToScene function is called back after model has loaded
 	
-	var ambientLight = new THREE.AmbientLight(0x111111);
+	var ambientLight = new THREE.AmbientLight(0x888888);
 	scene.add(ambientLight);
 	
 }
@@ -122,9 +132,11 @@ function init()
 function addModelToScene( geometry, materials ) 
 {
 	var material = new THREE.MeshFaceMaterial( materials );
-	android = new THREE.Mesh( geometry, material );
-	android.scale.set(1000,1000,1000);
-	scene.add( android );
+	model = new THREE.Mesh( geometry, material );
+	model.scale.set(1000,1000,1000);
+    model.castShadow = true;
+//    model.receiveShadow = true;
+	scene.add( model );
 }
 
 function animate() 
