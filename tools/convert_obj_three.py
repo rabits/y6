@@ -383,7 +383,8 @@ def parse_mtl(fname):
 
             # Ambient color
             # Ka 1.000 1.000 1.000
-            if chunks[0] == "Ka" and len(chunks) == 4:
+            # Switched to fix bug in obj
+            if chunks[0] == "Kd" and len(chunks) == 4:
                 materials[identifier]["colorAmbient"] = [float(chunks[1]), float(chunks[2]), float(chunks[3])]
 
             # Specular color

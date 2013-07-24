@@ -24,14 +24,11 @@
 <script src="js/info.js"></script>
 <div id="infoButton"></div>
 <div id="infoBox" title="Model info">
-This is 3D WebGL js model <a href="http://stemkoski.github.io/Three.js/">Three.js</a> shower, based on model demo:
-<div>Three.js "tutorials by example"</br>
-Author: Lee Stemkoski</br>
-Date: July 2013 (three.js v59dev)</div>
+This is 3D WebGL <a href="http://stemkoski.github.io/Three.js/">Three.js</a> model viewer, based on model example.</br>
+Press "z" to see wirframe &nbsp; axis.
 </div>
-<!-- ------------------------------------------------------------ -->
 
-<div id="ThreeJS" style="position: absolute; left:0px; top:0px"></div>
+<div id="ThreeJS" style="background-color:#99f; position: absolute; left:0px; top:0px"></div>
 <script>
 // MAIN
 
@@ -40,29 +37,28 @@ var container, scene, camera, renderer, controls, stats;
 var keyboard = new THREEx.KeyboardState();
 var clock = new THREE.Clock();
 
-// custom global variables
-var model;
+var model, axis;
 
 init();
 animate();
 
-// FUNCTIONS 		
+// FUNCTIONS
 function init() 
 {
     // SCENE
     scene = new THREE.Scene();
     // CAMERA
     var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
-    var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
+    var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 10000;
     camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
     scene.add(camera);
-    camera.position.set(0,150,400);
-    camera.lookAt(scene.position);	
+    camera.position.set(-200,150,-600);
+    camera.lookAt(scene.position);
     // RENDERER
     if ( Detector.webgl )
-    	renderer = new THREE.WebGLRenderer( {antialias:true} );
+        renderer = new THREE.WebGLRenderer( {antialias:true} );
     else
-    	renderer = new THREE.CanvasRenderer(); 
+        renderer = new THREE.CanvasRenderer();
     renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
     
     // Shadows
@@ -76,6 +72,19 @@ function init()
     THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
     // CONTROLS
     controls = new THREE.OrbitControls( camera, renderer.domElement );
+    // AXIS
+    axis = [];
+    // x
+    axis[0] = new THREE.ArrowHelper( new THREE.Vector3( 1, 0, 0 ), new THREE.Vector3( 0, 0, 0 ), 2000, 0xff0000 );
+    // y
+    axis[1] = new THREE.ArrowHelper( new THREE.Vector3( 0, 0, -1 ), new THREE.Vector3( 0, 0, 0 ), 2000, 0x00ff00 );
+    // z
+    axis[2] = new THREE.ArrowHelper( new THREE.Vector3( 0, 1, 0 ), new THREE.Vector3( 0, 0, 0 ), 2000, 0x0000ff );
+    for( var i in axis  ) {
+        axis[i].line.material.visible = false;
+        axis[i].cone.material.visible = false;
+        scene.add( axis[i] );
+    }
     // STATS
     stats = new Stats();
     stats.domElement.style.position = 'absolute';
@@ -83,40 +92,26 @@ function init()
     stats.domElement.style.zIndex = 100;
     container.appendChild( stats.domElement );
     // LIGHT
-    var light = new THREE.DirectionalLight(0xffffff);
-    light.position.set(400,400,-400);
+    var light = new THREE.SpotLight(0xffffff);
+    light.position.set(500,500,-500);
     light.target.position.set(0,0,0);
     light.castShadow = true;
-    light.shadowDarkness = 0.5;
-//    light.shadowCameraVisible = true;
+    light.shadowMapWidth = 2048;
+    light.shadowMapHeight = 2048;
+    light.shadowCameraNear = 100;
+    light.shadowCameraFar = 1500;
+    light.shadowCameraFov = 50;
+    light.shadowDarkness = 0.4;
+    light.shadowCameraVisible = true;
     scene.add(light);
-    light = new THREE.DirectionalLight(0xffffff);
-    light.position.set(-400,-400,400);
-    light.target.position.set(0,0,0);
-    light.castShadow = true;
-    light.shadowDarkness = 0.5;
-//    light.shadowCameraVisible = true;
-    scene.add(light);
-    // SKYBOX/FOG
-    var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
-    var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9999ff, side: THREE.BackSide } );
-    var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
-    scene.add(skyBox);
-    scene.fog = new THREE.FogExp2( 0x9999ff, 0.00025 );
+    // FOG
+    scene.fog = new THREE.FogExp2( 0x9999ff, 0.00010 );
 
-    ////////////
-    // CUSTOM //
-    ////////////
-    
-    // Note: if imported model appears too dark,
-    //   add an ambient light in this file
-    //   and increase values in model's exported .js file
-    //    to e.g. "colorAmbient" : [0.75, 0.75, 0.75]
+    // Load model
     var jsonLoader = new THREE.JSONLoader();
     jsonLoader.load( "model.js", addModelToScene );
-    // addModelToScene function is called back after model has loaded
     
-    var ambientLight = new THREE.AmbientLight(0xaaaaaa);
+    var ambientLight = new THREE.AmbientLight(0x888888);
     scene.add(ambientLight);
     
 }
@@ -124,6 +119,9 @@ function init()
 function addModelToScene( geometry, materials ) 
 {
     var material = new THREE.MeshFaceMaterial( materials );
+    for( var i in material.materials ) {
+        material.materials[i].side = THREE.DoubleSide;
+    }
     geometry.computeVertexNormals();
     model = new THREE.Mesh( geometry, material );
     model.scale.set(1000,1000,1000);
@@ -135,7 +133,7 @@ function addModelToScene( geometry, materials )
 function animate() 
 {
     requestAnimationFrame( animate );
-    render();		
+    render();
     update();
 }
 
@@ -143,7 +141,14 @@ function update()
 {
     if ( keyboard.pressed("z") ) 
     { 
-    	// do something
+        for( var i in model.material.materials ) {
+            model.material.materials[i].wireframe = !model.material.materials[i].wireframe;
+        }
+
+        for( var i in axis  ) {
+            axis[i].line.material.visible = !axis[i].line.material.visible;
+            axis[i].cone.material.visible = !axis[i].cone.material.visible;
+        }
     }
     
     controls.update();
