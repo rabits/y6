@@ -1,6 +1,8 @@
 Y6 Hexa Coaxial MultiCopter
 ===========================
 
+Repository contains scheme & model of Y6 folding multicopter. Model is created in Blender in metric units - you can use ruler (in v2.67) to get any additional dimensions.
+
 You can see current [WebGl model in your browser](http://www.rabits.org/hidden/y6/).
 
 ## Basic
