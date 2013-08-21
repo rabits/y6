@@ -5,6 +5,12 @@ Repository contains scheme & model of Y6 folding multicopter. Model is created i
 
 You can see current [WebGl model in your browser](http://www.rabits.org/hidden/y6/).
 
+## Why Y6?
+* **Foldable & compact** - fold the front arms and get easy-to-transport construction
+* **Moar field of view** - place the camera on the front and you'll get an visibility close to 120 degrees
+* **Motor reservation** - if one of the engines fail in flight - you can land the machine on the ground
+* **It looks cool** )))
+
 ## Frame
 * **Arms:** Aluminium pipe Д16т (2024t35) 10x1mm (3m)
 * **Body:** Aluminium plate 120x2mm
@@ -23,6 +29,6 @@ You can see current [WebGl model in your browser](http://www.rabits.org/hidden/y
 ## FPV
 * **Camera (x2):** [690TVL Ultra WDR Pixim SEAWOLF 3.6mm](http://www.securitycamera2000.com/products/690TVL-HD-Ultra-WDR-Pixim-SEAWOLF-Sensor-chip-OSD-Camera-3.6mm-lens.html)
 * **OSD:** [APM MinimOSD 1.1](http://store.3drobotics.com/products/apm-minimosd-rev-1-1)
-* **Transmitter (x2):** [RDQ1763X Mini 8CH 5.8G 200mW](http://www.securitycamera2000.com/products/Mini-8CH-5.8G-200mW-Wireless-Video-Audio-Transmitter-for-FPV.html)
-* **Receiver:** [D58-2 5.8G 8CH Video Audio](http://www.securitycamera2000.com/products/5.8G-8CH-Video-Audio-Mini-Wireless-Receiver-for-FPV.html)
-* **FPV Battery:** [ZIPPY Compact 1000mAh 4S 25C Lipo Pack](http://www.hobbyking.com/hobbyking/store/uh_viewItem.asp?idProduct=21335)
+* **Transmitter (x2):** [Boscam TS353 5.8G 400mW FPV Transmitter](http://www.hobbyking.com/hobbyking/store/uh_viewItem.asp?idProduct=27145)
+* **Receiver:** [Boscam 5.8GHz 8CH Diversity A/V Receiver w/Dual Output](http://www.hobbyking.com/hobbyking/store/uh_viewItem.asp?idProduct=27778)
+* **FPV Battery:** [Turnigy 1000mAh 4S 20C Lipo Pack](http://www.hobbyking.com/hobbyking/store/uh_viewItem.asp?idProduct=9624)
